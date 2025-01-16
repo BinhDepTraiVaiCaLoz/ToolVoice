@@ -3,6 +3,10 @@ from tkinter import filedialog, messagebox
 import speech_recognition as sr
 import openpyxl
 
+# Biến toàn cục
+recognizer = sr.Recognizer()
+audio_data = None
+
 # Hàm để chọn file Excel
 def select_file():
     filepath = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
@@ -10,22 +14,33 @@ def select_file():
         file_path_entry.delete(0, tk.END)
         file_path_entry.insert(0, filepath)
 
-# Hàm chuyển giọng nói sang văn bản
-def recognize_speech():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        try:
+# Bắt đầu ghi âm
+def start_recording():
+    global audio_data
+    try:
+        with sr.Microphone() as source:
             status_label.config(text="Listening...", fg="blue")
-            audio = recognizer.listen(source)
-            status_label.config(text="Processing...", fg="orange")
-            text = recognizer.recognize_google(audio, language="vi-VN")
-            text_entry.delete(0, tk.END)
-            text_entry.insert(0, text)
-            status_label.config(text="Recognition complete.", fg="green")
-        except sr.UnknownValueError:
-            status_label.config(text="Could not understand the audio.", fg="red")
-        except sr.RequestError as e:
-            status_label.config(text=f"Error with the service: {e}", fg="red")
+            audio_data = recognizer.listen(source, timeout=None)
+            status_label.config(text="Recording... Press 'End' to stop", fg="orange")
+    except Exception as e:
+        status_label.config(text=f"Error: {e}", fg="red")
+
+# Kết thúc ghi âm và xử lý
+def end_recording():
+    global audio_data
+    try:
+        if audio_data is None:
+            messagebox.showerror("Error", "No recording started.")
+            return
+        status_label.config(text="Processing...", fg="orange")
+        text = recognizer.recognize_google(audio_data, language="vi-VN")
+        text_entry.delete(0, tk.END)
+        text_entry.insert(0, text)
+        status_label.config(text="Recognition complete.", fg="green")
+    except sr.UnknownValueError:
+        status_label.config(text="Could not understand the audio.", fg="red")
+    except sr.RequestError as e:
+        status_label.config(text=f"Error with the service: {e}", fg="red")
 
 # Hàm để ghi văn bản vào ô Excel
 def write_to_excel():
@@ -78,8 +93,11 @@ cell_entry = tk.Entry(root)
 cell_entry.grid(row=2, column=1, sticky="w")
 
 # Phần chuyển giọng nói sang văn bản
-record_button = tk.Button(root, text="Start Recording", command=recognize_speech)
-record_button.grid(row=3, column=0, columnspan=3, pady=10)
+record_button = tk.Button(root, text="Start Recording", command=start_recording)
+record_button.grid(row=3, column=0, columnspan=1, pady=10)
+
+end_button = tk.Button(root, text="End Recording", command=end_recording)
+end_button.grid(row=3, column=1, columnspan=1, pady=10)
 
 text_label = tk.Label(root, text="Recognized Text:")
 text_label.grid(row=4, column=0, sticky="w")
