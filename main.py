@@ -71,9 +71,9 @@ def start_recording():
     global audio_data
     try:
         with sr.Microphone() as source:
-            status_label.config(text="Listening...", fg="blue")
+            status_label.config(text="Đang lắng nghe...", fg="blue")
             audio_data = recognizer.listen(source, timeout=None)
-            status_label.config(text="Recording... Press 'End' to stop", fg="orange")
+            status_label.config(text="Đang ghi... Nhấn 'End' để dừng", fg="orange")
     except Exception as e:
         status_label.config(text=f"Error: {e}", fg="red")
 
