@@ -86,6 +86,10 @@ def end_recording():
             return
         status_label.config(text="Processing...", fg="orange")
         text = recognizer.recognize_google(audio_data, language="vi-VN")
+
+        # Xử lý thay thế "phẩy" bằng dấu phẩy thực tế
+        text = text.replace("phẩy", ",")
+
         text_entry.delete(0, tk.END)
         text_entry.insert(0, text)
         status_label.config(text="Recognition complete.", fg="green")
@@ -119,6 +123,9 @@ def write_to_excel():
         sheet[cell] = text
         wb.save(filepath)
         messagebox.showinfo("Success", f"Text written to {cell} in sheet '{sheet_name}'.")
+
+        # Load lại nội dung sheet sau khi ghi
+        display_sheet(sheet_name, wb)
     except Exception as e:
         messagebox.showerror("Error", f"Failed to write to Excel: {e}")
 
