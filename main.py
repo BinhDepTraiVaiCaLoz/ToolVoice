@@ -29,25 +29,25 @@ def select_file():
 def display_sheet(sheet_name, workbook):
     try:
         sheet = workbook[sheet_name]
-        for widget in sheet_frame.winfo_children():
+        for widget in sheet_canvas.winfo_children():
             widget.destroy()
 
         # Hiển thị tiêu đề cột
         max_col = sheet.max_column
         for j in range(1, max_col + 1):
             column_letter = get_column_letter(j)
-            header = tk.Label(sheet_frame, text=column_letter, bg="#d3d3d3", font=("Arial", 10, "bold"))
+            header = tk.Label(sheet_canvas, text=column_letter, bg="#d3d3d3", font=("Arial", 10, "bold"))
             header.grid(row=0, column=j, padx=2, pady=2)
 
         # Hiển thị dữ liệu
         max_row = sheet.max_row
         for i in range(1, max_row + 1):
             # Hiển thị số hàng
-            row_header = tk.Label(sheet_frame, text=str(i), bg="#d3d3d3", font=("Arial", 10, "bold"))
+            row_header = tk.Label(sheet_canvas, text=str(i), bg="#d3d3d3", font=("Arial", 10, "bold"))
             row_header.grid(row=i, column=0, padx=2, pady=2)
             for j in range(1, max_col + 1):
                 value = sheet.cell(row=i, column=j).value
-                cell = tk.Entry(sheet_frame, width=15, font=("Arial", 10))
+                cell = tk.Entry(sheet_canvas, width=15, font=("Arial", 10))
                 cell.grid(row=i, column=j, padx=2, pady=2)
                 cell.insert(0, value if value is not None else "")
                 cell.config(state="readonly")
@@ -126,7 +126,7 @@ def write_to_excel():
 root = tk.Tk()
 root.title("Speech to Text to Excel")
 root.geometry("800x600")
-root.resizable(False, False)
+root.resizable(True, True)
 root.configure(bg="#f4f4f4")
 
 # Header
@@ -148,9 +148,19 @@ sheet_combo = ttk.Combobox(file_frame, font=("Arial", 10))
 sheet_combo.grid(row=1, column=1, padx=5)
 sheet_combo.bind("<<ComboboxSelected>>", on_sheet_select)
 
-# Frame hiển thị sheet
+# Frame cuộn cho sheet
 sheet_frame = tk.Frame(root, bg="#f4f4f4")
-sheet_frame.pack(pady=10)
+sheet_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+sheet_canvas = tk.Canvas(sheet_frame, bg="#f4f4f4")
+sheet_scroll = tk.Scrollbar(sheet_frame, orient=tk.VERTICAL, command=sheet_canvas.yview)
+sheet_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+sheet_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+sheet_canvas.configure(yscrollcommand=sheet_scroll.set)
+
+# Frame hiển thị sheet trong canvas
+sheet_inner_frame = tk.Frame(sheet_canvas, bg="#f4f4f4")
+sheet_canvas.create_window((0, 0), window=sheet_inner_frame, anchor="nw")
+sheet_canvas.bind("<Configure>", lambda e: sheet_canvas.configure(scrollregion=sheet_canvas.bbox("all")))
 
 # Frame nhập ô và ghi âm
 input_frame = tk.Frame(root, bg="#f4f4f4")
