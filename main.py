@@ -131,26 +131,28 @@ def write_to_excel():
 
 # Tạo giao diện chính
 root = tk.Tk()
-root.title("Speech to Text to Excel")
-root.geometry("800x600")
+root.title("Phần mềm chuyển đổi giọng nói")
+root.geometry("1000x800")
 root.resizable(True, True)
 root.configure(bg="#f4f4f4")
 
 # Header
-header_label = tk.Label(root, text="Speech to Text to Excel", font=("Arial", 16, "bold"), bg="#f4f4f4", fg="#333")
-header_label.pack(pady=10)
+header_label = tk.Label(root, text="Phần mềm chuyển đổi giọng nói", font=("Arial", 16, "bold"), bg="#f4f4f4", fg="#333")
+design_by = tk.Label(root, text="Design by: Thịnh Nguyễn (GĐYK)", font=("Arial", 10, "bold"), bg="#f4f4f4", fg="#333")
+header_label.pack(pady=(10, 0))
+design_by.pack(pady=(0, 20))
 
 # Frame chọn file
 file_frame = tk.Frame(root, bg="#f4f4f4")
 file_frame.pack(pady=5)
-tk.Label(file_frame, text="Select Excel File:", font=("Arial", 10), bg="#f4f4f4").grid(row=0, column=0, sticky="w", padx=5)
+tk.Label(file_frame, text="Chọn File Excel:", font=("Arial", 10), bg="#f4f4f4").grid(row=0, column=0, sticky="w", padx=5)
 file_path_entry = tk.Entry(file_frame, width=30, font=("Arial", 10))
 file_path_entry.grid(row=0, column=1, padx=5)
 file_button = tk.Button(file_frame, text="Browse", command=select_file, bg="#0078D7", fg="white", font=("Arial", 10))
 file_button.grid(row=0, column=2, padx=5)
 
 # Combo box chọn sheet
-tk.Label(file_frame, text="Select Sheet:", font=("Arial", 10), bg="#f4f4f4").grid(row=1, column=0, sticky="w", padx=5)
+tk.Label(file_frame, text="Chọn Sheet:", font=("Arial", 10), bg="#f4f4f4").grid(row=1, column=0, sticky="w", padx=5)
 sheet_combo = ttk.Combobox(file_frame, font=("Arial", 10))
 sheet_combo.grid(row=1, column=1, padx=5)
 sheet_combo.bind("<<ComboboxSelected>>", on_sheet_select)
@@ -179,20 +181,20 @@ cell_entry.grid(row=0, column=1, padx=5)
 # Frame chức năng ghi âm
 record_frame = tk.Frame(root, bg="#f4f4f4")
 record_frame.pack(pady=10)
-record_button = tk.Button(record_frame, text="Start Recording", command=start_recording, bg="#28A745", fg="white", font=("Arial", 10))
+record_button = tk.Button(record_frame, text="Bắt đầu ghi", command=start_recording, bg="#28A745", fg="white", font=("Arial", 10))
 record_button.grid(row=0, column=0, padx=10)
-end_button = tk.Button(record_frame, text="End Recording", command=end_recording, bg="#DC3545", fg="white", font=("Arial", 10))
+end_button = tk.Button(record_frame, text="Kết thúc", command=end_recording, bg="#DC3545", fg="white", font=("Arial", 10))
 end_button.grid(row=0, column=1, padx=10)
 
 # Frame hiển thị văn bản
 text_frame = tk.Frame(root, bg="#f4f4f4")
 text_frame.pack(pady=5)
-tk.Label(text_frame, text="Recognized Text:", font=("Arial", 10), bg="#f4f4f4").grid(row=0, column=0, sticky="w", padx=5)
+tk.Label(text_frame, text="Văn bản:", font=("Arial", 10), bg="#f4f4f4").grid(row=0, column=0, sticky="w", padx=5)
 text_entry = tk.Entry(text_frame, width=40, font=("Arial", 10))
 text_entry.grid(row=0, column=1, padx=5)
 
 # Nút ghi vào Excel
-write_button = tk.Button(root, text="Write to Excel", command=write_to_excel, bg="#0078D7", fg="white", font=("Arial", 10))
+write_button = tk.Button(root, text="Lưu Excel", command=write_to_excel, bg="#0078D7", fg="white", font=("Arial", 10))
 write_button.pack(pady=10)
 
 # Status label
