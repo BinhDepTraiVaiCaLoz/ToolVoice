@@ -142,6 +142,12 @@ def end_recording():
         # Xử lý thay thế "phẩy" bằng dấu phẩy thực tế
         text = text.replace("phẩy", ",")
 
+        # Loại bỏ khoảng trắng dư thừa trước dấu câu
+        text = re.sub(r'\s+([,\.!?:])', r'\1', text)
+
+        # Loại bỏ khoảng trắng dư thừa giữa các từ
+        text = re.sub(r'\s+', ' ', text).strip()
+
         text_entry.delete(0, tk.END)
         text_entry.insert(0, text)
         status_label.config(text="Recognition complete.", fg="green")
