@@ -14,6 +14,15 @@ audio_data = None
 current_page = 1
 rows_per_page = 50
 
+def capitalize_sentences(text):
+    # Tách các câu dựa trên các dấu câu (.!?)
+    sentences = re.split(r'([.!?])', text)
+    # Viết hoa chữ cái đầu mỗi câu và nối lại với dấu câu
+    sentences = [sentence.strip().capitalize() + (punctuation if punctuation else '')
+                 for sentence, punctuation in zip(sentences[::2], sentences[1::2])]
+    return ' '.join(sentences)
+
+
 # Hàm để chọn file Excel và hiển thị sheet
 def select_file():
     filepath = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
@@ -147,6 +156,8 @@ def end_recording():
 
         # Loại bỏ khoảng trắng dư thừa giữa các từ
         text = re.sub(r'\s+', ' ', text).strip()
+
+        text = capitalize_sentences(text)
 
         text_entry.delete(0, tk.END)
         text_entry.insert(0, text)
